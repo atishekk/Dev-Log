@@ -1,0 +1,21 @@
+{
+  "name": "dev-log",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop -H 0.0.0.0"
+  },
+  "dependencies": {
+    "@mdx-js/mdx": "^1.6.22",
+    "@mdx-js/react": "^1.6.22",
+    "gatsby": "^3.6.1",
+    "gatsby-plugin-mdx": "^2.6.0",
+    "gatsby-plugin-styled-components": "^4.6.0",
+    "gatsby-source-filesystem": "^3.6.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "styled-components": "^5.3.0"
+  }
+}
