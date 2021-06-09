@@ -1,0 +1,13 @@
+body {
+  box-sizing: border-box;
+  ::-webkit-scrollbar{
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #eceff4;
+  margin: 20px 0px 10px 0px;
+}

@@ -9,6 +9,7 @@ module.exports = {
     `gatsby-plugin-styled-components`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
+    `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-plugin-mdx`,
       options: {
@@ -33,6 +34,12 @@ module.exports = {
           },
         ],
       },
+    },
+    {
+      resolve: `gatsby-plugin-typography`,
+      options: {
+        pathToConfigModule: `src/utils/typography`,
+      }
     },
     {
       resolve: `gatsby-source-filesystem`,

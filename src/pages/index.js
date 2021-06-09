@@ -1,16 +1,13 @@
-import { Link, graphql } from 'gatsby';
-import Img from 'gatsby-image';
+import { graphql } from 'gatsby';
 import React from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
+import Post from "../components//Post";
+
 
 const IndexWrapper = styled.main``;
 
-const PostWrapper = styled.div``;
 
-const Image = styled(Img)`
-  border-radius: 5px;
-`;
 
 export default function Index({ data }){
   return (
@@ -18,19 +15,7 @@ export default function Index({ data }){
       <IndexWrapper>
         {data.allMdx.nodes.map(
           ({ id, excerpt, frontmatter, fields }) => (
-            <PostWrapper key={id}>
-              <Link to={fields.slug}>
-                {!!frontmatter.cover ? (
-                  <Image
-                    fluid={frontmatter.cover.childImageSharp.fluid}
-                  />
-                ) : null}
-                <h1>{frontmatter.title}</h1>
-                <p>{frontmatter.date}</p>
-                <p>{excerpt}</p>
-              </Link>
-            </PostWrapper>
-          )
+            <Post id={id} excerpt={excerpt} frontmatter={frontmatter} fields={fields} />)
         )}
       </IndexWrapper>
     </Layout>
@@ -48,11 +33,12 @@ export const pageQuery = graphql`
       excerpt(pruneLength: 250)
       frontmatter {
         title
-        date(formatString: "YYYY MMMM Do")
+        tags
+        date(formatString: "Do MMMM, YYYY")
         cover {
           publicURL
           childImageSharp {
-            fluid(traceSVG: {color: "#639"}, maxWidth: 1000){
+            fluid(traceSVG: {color: "#639"}, maxWidth: 2000){
               ...GatsbyImageSharpFluid_tracedSVG
             }
           }
