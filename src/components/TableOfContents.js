@@ -50,7 +50,7 @@ function renderItems(items, activeId, space) {
               href={item.url}
               style={{
                 color: activeId === item.url.slice(1) ? `${Theme.nord7}` : `${Theme.nord4}`,
-                fontSize: activeId === item.url.slice(1) ? `1.1rem` : '0.9rem',
+                fontSize: activeId === item.url.slice(1) ? `1.1rem` : '0.8rem',
                 textDecoration: 'none',
               }}
             >

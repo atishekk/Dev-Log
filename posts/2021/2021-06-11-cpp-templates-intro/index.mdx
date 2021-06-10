@@ -1,0 +1,101 @@
+---
+title: C++ Templates - Introduction ( Part 1 )
+date: 2021-06-11
+published: true
+tags: ["cpp", "templates", "generic programming"]
+cover: cover.png
+---
+
+**Templates** have been part of C++ for a quite a long time now (longer than I've been around to say the least). 
+But what are templates exactly?
+
+# Templates
+
+> A **template** is a class, function or a variable that can be parameterised with a set of types or values.
+
+Templates provide direct support for generic programming by using types as parameters. Hence a wide range of general concepts
+can be represented in code easily and the resulting implemetation is as performant as handwritten, less general code.
+
+## A Simple Example
+
+Let's take up an example to make things a little more concrete.
+
+### The Problem
+
+Consider a function `array_sum()` that takes an array and returns the total sum. For the time being you decide that you'll 
+only work with intergers, so you write the following code:
+
+```cpp
+
+int array_sum(int arr[], size_t size) {
+  int sum = 0;
+  for(size_t i = 0; i < size; i++) {
+    sum += arr[i];
+  }
+  return sum;
+}
+
+```
+
+A 32-bit interger might be enough but a 64-bit integer can be slower to manipulate and store. So,
+you being prudent write another function `array_sum_64()` .
+
+```cpp
+
+long long array_sum(long long arr[], size_t size) {
+  long long sum = 0;
+  for(size_t i = 0; i < size; i++) {
+    sum += arr[i];
+  }
+  return sum;
+}
+
+```
+
+Now some fine day you wanna sum up an array of `float`. Well implementing another function seems to be thw obvious choice, but soon
+the code base would be cluttered with weirdly long and super not easy to remember functions that do the same thing.
+
+### Templates to the rescue !!
+
+The `array_sum()` function can be implemented as follows:
+
+```cpp
+template<typename InputType, typename OutputType>       // 1
+OutputType array_sum(InputType arr[], size_t size) {    // 2
+  OutputType sum = 0;                                   // 3
+  for(size_t i = 0; i < size; i++) {
+    sum += arr[i];
+  }
+  return sum;
+}
+```
+
+Let's go over the code: 
+1. We tell the compiler that the function `array_sum()` requires two template parameters `InputType` and `OutputType` that 
+are typenames.
+2. The function signature is similar to our previous example with the typenames replaced by the template parameters
+3. Variables can be defined using the template parameter just like any other data type;
+
+### How do I use it now?
+
+Now consider the situation that you want to sum an array of `float` but the result should be say a `double`.
+
+```cpp
+
+int main() {
+//...
+  float arr[5]{1.2, 21.98, 23.3, 55.123, 5.78};
+  auto result = array_sum<float, double>(arr, 5); //1
+//...
+}
+
+```
+
+1. The template typenames are specified in the function call to signal the compiler about the function's signature and what
+code needs to be generated.
+
+## So ...
+
+Templates can be pretty handy when different types of data needs to be manipulated in a same or similar way. But specifing 
+template requirements and type checking can be a little tricky, more on that in a later article.
+

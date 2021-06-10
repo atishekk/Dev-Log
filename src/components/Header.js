@@ -38,9 +38,9 @@ box-shadow: 0px 0px 20px ${Theme.nord7};
 background-color: ${Theme.nord8};
 color: ${Theme.nord1};
 }
-  @media (max-width: 400px) {
-    margin: 3px;
-    padding: 6px;
+  @media (max-width: 500px) {
+    margin: 2px;
+    padding: 4px;
   }
 `
 const Title = styled.h1`
@@ -55,7 +55,7 @@ const Title = styled.h1`
   background-color: ${Theme.nord4};
   color: ${Theme.nord1};
   }
-  @media (max-width: 400px) {
+  @media (max-width: 500px) {
     font-size: 1.5rem;
   }
 `

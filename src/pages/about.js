@@ -5,6 +5,9 @@ import Layout from '../components/Layout';
 import SEO from 'react-seo-component';
 import { useSiteMetadata } from '../hooks/useSiteMetadata';
 import {StaticImage} from 'gatsby-plugin-image';
+import {Linux, Cplusplus, C, Cmake, Kotlin, Flutter, Python, Tensorflow, Docker, Mongodb, Sqlite, Git, Latex, Markdown} from '@styled-icons/simple-icons';
+import {Node, ReactLogo, Android} from '@styled-icons/fa-brands'
+import ReactTooltip from 'react-tooltip';
 
 const Title = styled.div`
   border-left: 7px solid ${Theme.nord4};
@@ -18,16 +21,36 @@ const Content = styled.div`
   transition: 0.6s;
   :hover {
     box-shadow: 0px 0px 20px ${Theme.nord0};
+    .aboutImage {
+      box-shadow: 10px 10px ${Theme.nord6};
+    }
   }
 `;
 const Image = styled.div`
   float: right;
-  @media(min-width: 700px) {
+  @media(min-width: 850px) {
     width: 500px;
+    padding-top: 20px;
   }
-  width: 100%;
-  padding: 20px;
+  @media(max-width: 600px) {
+    width: 100%;
+    padding-top: 20px;
+  }
+  width: calc(100% - 60vw);
+  padding: 0px 20px 20px 20px;
   transition: 0.6s;
+  height:100%;
+  display: flex;
+
+`;
+
+const InterestsContainer = styled.div`
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  *{
+    margin: 10px;
+  }
 `;
 
 export default function About() {
@@ -53,14 +76,39 @@ export default function About() {
         <StaticImage src={"../../posts/images/about.jpg"} alt = "My Photo" placeholder="blurred" layout="constrained" className="aboutImage"/>
         </Image>
         <p>
-           Lorem ipsum dolor sit amet, consectetur adipiscing elit. In aliquam, enim nec tempus convallis, ante ligula facilisis tortor, at gravida odio leo ut mi. In vel bibendum justo, maximus venenatis tellus. Sed mi urna, condimentum in imperdiet in, tincidunt sit amet enim. Aenean suscipit vestibulum nisi quis gravida. Duis id ex a odio consequat vulputate. Nunc rutrum laoreet lacinia. Donec non dui dolor. Donec sed varius tortor. Nam in est quis elit aliquet blandit vitae ut sem. In nec nulla sed eros varius elementum vitae quis eros. Ut faucibus arcu in magna commodo egestas. Ut elementum accumsan nisl a gravida.
+          Hi, I'm Atishek. I'm 20 and currently pursuing my Bachelors in 
+          <i> Computer Science and Artificial Intelligence. </i>  
+        </p>
+        <p>
+          I'm passionate about technology and I love solving problems. This blog is my effort to express my passion, learn
+          new things and hopefully meet new people.
+        </p>
+        <p>
+          Some of my interests include: 
+          <InterestsContainer> 
+            <Linux style={{height: '40px'}} data-tip='Linux' data-event='mouseenter click'/>
+            <Cplusplus style={{height: '40px'}} data-tip='C++'data-event='mouseenter click'/>
+            <C style={{height: '40px'}} data-tip='C'data-event='mouseenter click'/>
+            <Git style={{height: '40px'}} data-tip='Git'data-event='mouseenter click'/>
+            <Python style={{height: '40px'}} data-tip='Python'data-event='mouseenter click'/>
+            <Tensorflow style={{height: '40px'}} data-tip='Tensorflow' data-event='mouseenter click'/>
+            <Kotlin style={{height: '40px'}} data-tip='Kotlin' data-event='mouseenter click'/>
+            <Android style={{height: '40px'}} data-tip='Android'data-event='mouseenter click'/>
+            <Flutter style={{height: '40px'}} data-tip='Flutter'data-event='mouseenter click'/>
+            <Docker style={{height: '40px'}} data-tip='Docker'data-event='mouseenter click'/>
+            <Cmake style={{height: '40px'}} data-tip='CMake'data-event='mouseenter click'/>
+            <Node style={{height: '40px'}} data-tip='Node.js'data-event='mouseenter click'/>
+            <ReactLogo style={{height: '40px'}} data-tip='React' data-event='mouseenter click'/>
+            <Sqlite style={{height: '40px'}} data-tip='SQL'data-event='mouseenter click'/>
+            <Mongodb style={{height: '40px'}} data-tip='MongoDB'data-event='mouseenter click'/>
+            <Markdown style={{height: '40px'}} data-tip='Markdown'data-event='mouseenter click'/>
+            <Latex style={{height: '40px'}} data-tip='Latex'data-event='mouseenter click'/>
+          </InterestsContainer>
+        </p>
+        <p>
 
         </p>
-        <p>
-Quisque eros mi, feugiat vel sem in, congue efficitur sem. Quisque eget egestas enim. In id ultricies quam, in facilisis erat. Fusce non nibh libero. Pellentesque in ligula sapien. Sed auctor nunc nisi, eget vulputate turpis hendrerit ut. Vivamus egestas mi at libero hendrerit, a volutpat velit placerat.
-        </p>
-        <p>
-        </p>
+        <ReactTooltip className="toolTip" globalEventOff='click'/>
       </Content>
     </Layout>
   )

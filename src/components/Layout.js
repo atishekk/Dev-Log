@@ -5,6 +5,7 @@ import Header from './Header';
 import Fade from "./Fade";
 import Footer from "./Footer";
 import Theme from '../theme/Theme';
+import {Notif} from "./Notif";
 
 
 const AppStyles = styled.div`
@@ -32,6 +33,7 @@ export default function Layout({children, _title}) {
           {children}
         </Main>
         <Footer />
+        <Notif />
       </AppStyles>
     </Fade>
   )

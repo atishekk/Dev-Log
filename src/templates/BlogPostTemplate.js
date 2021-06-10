@@ -114,7 +114,7 @@ export default function BlogPostTemplate({data, pageContext}) {
         }
         <Contents>
           {!!frontmatter.cover ? (
-            <GatsbyImage image={image} />
+            <GatsbyImage image={image} style={{marginBottom: '20px'}} alt="Cover image"/>
           ) : null}
 
           <MDXRenderer>{body}</MDXRenderer>

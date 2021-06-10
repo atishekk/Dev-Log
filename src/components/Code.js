@@ -3,9 +3,7 @@ import Nordtheme from './Nord';
 import React from 'react';
 import styled from 'styled-components';
 import { copyToClipboard } from '../utils/copy-to-clipboard';
-import {toast, ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
-import Theme from '../theme/Theme'
+import {notif} from "./Notif";
 
 export const Pre = styled.pre`
   text-align: left;
@@ -39,25 +37,16 @@ const CopyCode = styled.button`
   &:hover {
     opacity: 1;
   }
+  @media (max-width: 700px) {
+    position: relative;
+  }
 `;
 
 
 const Code = ({ codeString, language }) => {
   const handleClick = () => {
     copyToClipboard(codeString);
-    return toast('Code Copied', {
-      position: "top-right",
-      autoClose: false,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      style: {
-        backgroundColor: Theme.nord0,
-        color: Theme.nord6,
-      }
-    });
+    notif();
   };
 
   return (
@@ -87,15 +76,6 @@ const Code = ({ codeString, language }) => {
           </Pre>
         )}
       </Highlight>
-      <ToastContainer
-        position="top-right"
-        autoClose={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-      />
     </>
   );
 };
