@@ -19,7 +19,7 @@ export const query = graphql`
 `;
 
 const Container = styled.div`
-padding: 5px;
+padding: 0px 10px 10px 10px;
 `;
 
 const TagLink = styled(Link)`

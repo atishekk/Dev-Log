@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { copyToClipboard } from '../utils/copy-to-clipboard';
 import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import Theme from '../theme/Theme'
 
 export const Pre = styled.pre`
   text-align: left;
@@ -41,12 +42,11 @@ const CopyCode = styled.button`
 `;
 
 
-
 const Code = ({ codeString, language }) => {
   const handleClick = () => {
     copyToClipboard(codeString);
-    return toast('Copied to Clipboard', {
-      position: "bottom-right",
+    return toast('Code Copied', {
+      position: "top-right",
       autoClose: false,
       hideProgressBar: false,
       closeOnClick: true,
@@ -54,8 +54,8 @@ const Code = ({ codeString, language }) => {
       draggable: true,
       progress: undefined,
       style: {
-        backgroundColor: "#000",
-        color: "#fff"
+        backgroundColor: Theme.nord0,
+        color: Theme.nord6,
       }
     });
   };
@@ -88,7 +88,7 @@ const Code = ({ codeString, language }) => {
         )}
       </Highlight>
       <ToastContainer
-        position="bottom-right"
+        position="top-right"
         autoClose={false}
         newestOnTop={false}
         closeOnClick

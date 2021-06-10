@@ -7,6 +7,9 @@ import TableOfContents from "../components/TableOfContents"
 import Theme from '../theme/Theme'
 import styled from 'styled-components';
 import Tags from "../components/Tags";
+import {LeftArrow, RightArrow} from '@styled-icons/boxicons-regular'
+import {useSiteMetadata} from "../hooks/useSiteMetadata";
+import SEO from 'react-seo-component';
 
 const Container = styled.div`
 padding: 2px;
@@ -16,8 +19,8 @@ const ContentTable = styled.div`
   display: none;
   position: fixed;
   z-index: 1;
-  width: 160px;
   margin-top: 20px;
+  margin-left:calc(100vw - 185px);
   padding: 10px ;
   border-radius: 10px;
   background-color: ${Theme.nord0};
@@ -25,17 +28,22 @@ const ContentTable = styled.div`
   display: block;
   width: 170px;
   }
+
+  @media(min-width: 1000px) {
+    margin-left: 820px;
+  }
 `
 
 const Navigation = styled.div`
   display:flex;
   justify-content: space-between;
+  margin-top: 30px;
 `
 
 const Contents = styled.div`
   margin-left: 0px;
   @media (min-width: 750px) {
-  margin-left: 180px;
+  margin-right: 180px;
   }
 `
 const NavLinks = styled(Link)`
@@ -45,62 +53,95 @@ transition: 0.6s;
 :hover {
 color: ${Theme.nord14};
 }
-`
+`;
 
-const Title = styled.h1`
-  border-left: 10px solid ${Theme.nord0};
-  padding-left 10px;
-`
+const TitleSection = styled.div`
+  position: relative;
+  border-left: 10px solid ${Theme.nord4};
+  padding: 5px 10px 10px 20px;
+  margin-bottom: 10px;
+  width: 100%;
+  background-color: ${Theme.nord0};
+`;
+
+const OldPost = styled(LeftArrow)`
+  height:20px;
+
+`;
+const NewPost = styled(RightArrow)`
+  height: 20px;
+`;
+
 
 export default function BlogPostTemplate({data, pageContext}) {
-  const {frontmatter, body, tableOfContents} = data.mdx;
+  const {frontmatter, body, tableOfContents, excerpt, fields} = data.mdx;
   const {previous, next} = pageContext;
+  const {
+    siteUrl,
+    siteLanguage,
+    siteLocale,
+    authorName
+  } = useSiteMetadata();
 
   return (
     <Layout>
+      <SEO
+        title={frontmatter.title}
+        description={excerpt}
+        pathname={`${siteUrl}${fields.slug}`}
+        siteLanguage={siteLanguage}
+        siteLocale={siteLocale}
+        image={`${siteUrl}${frontmatter.cover.publicURL}]`}
+        author={authorName}
+        article={true}
+        datePublished={frontmatter.date}
+      />
       <Container>
-        <Title>{frontmatter.title}</Title>
+        <TitleSection>
+        <h1>{frontmatter.title}</h1>
         <i>{frontmatter.date}</i>
-              {!!frontmatter.tags ? <Tags tags = {frontmatter.tags} />: null}
+        {!!frontmatter.tags ? <Tags tags = {frontmatter.tags} />: null}
+          </TitleSection>
         {
           tableOfContents.items ? (
             <ContentTable>
-            <TableOfContents items={tableOfContents.items} />
-              </ContentTable>
+              <TableOfContents items={tableOfContents.items} />
+            </ContentTable>
           ) : null
         }
         <Contents>
-        {!!frontmatter.cover ? (
-          <Img
-            fluid={frontmatter.cover.childImageSharp.fluid}
-          />
-        ) : null}
-        
-        <MDXRenderer>{body}</MDXRenderer>
-          </Contents>
+          {!!frontmatter.cover ? (
+            <Img
+              fluid={frontmatter.cover.childImageSharp.fluid}
+            />
+          ) : null}
+
+          <MDXRenderer>{body}</MDXRenderer>
+        </Contents>
         <Navigation>
-        {previous === false ? null : (
-          <>
-            {previous && (
-              <b>{"<<  "}
-              <NavLinks to={previous.fields.slug}>
-                <span>{previous.frontmatter.title}</span>
-              </NavLinks>
-              </b>
-            )}
-          </>
-        )}
-        {next === false ? null : (
-          <>
-            {next && (
-              <b>
-              <NavLinks to={next.fields.slug}>
-                <span>{next.frontmatter.title}</span>
-              </NavLinks>{" >>"}
-              </b>
-            )}
-          </>
-        )}
+          {previous === false ? null : (
+            <>
+              {previous && (
+                <b>
+                  <NavLinks to={previous.fields.slug}>
+                    <OldPost />
+                    <span>{previous.frontmatter.title}</span>
+                  </NavLinks>
+                </b>
+              )}
+            </>
+          )}
+          {next === false ? null : (
+            <>
+              {next && (
+                <b>
+                  <NavLinks to={next.fields.slug}>
+                    <span>{next.frontmatter.title}</span><NewPost />
+                  </NavLinks>
+                </b>
+              )}
+            </>
+          )}
         </Navigation>
       </Container>
     </Layout>
@@ -117,14 +158,18 @@ query POST_SLUG($slug: String!) {
       cover {
         publicURL
         childImageSharp {
-          fluid(traceSVG: {color: "#639"}, maxWidth: 2000) {
-            ...GatsbyImageSharpFluid_tracedSVG
+          fluid(traceSVG: {color: "#d8dee9"}, maxWidth: 2000) {
+          ...GatsbyImageSharpFluid_tracedSVG
           }
         }
       }
     }
     tableOfContents
+    excerpt
     body
+    fields {
+      slug
+    }
   }
 }
 `;

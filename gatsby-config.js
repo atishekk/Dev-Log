@@ -3,13 +3,23 @@ const remarkSlug = require(`remark-slug`);
 module.exports = {
   siteMetadata: {
     title: "Dev::Log",
-    description: "Blog about idk something"
+    description: "Blog about technology and my coding journey",
+    siteUrl: `https://dev-log-atishek.netlify.app/`,
+    siteLanguage: `en`,
+    siteLocale: `en_in`,
+    authorName: `Atishek Kumar`
   },
   plugins: [
     `gatsby-plugin-styled-components`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     `gatsby-plugin-react-helmet`,
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        icon: `src/static/images/favicon.png`,
+        }
+    },
     {
       resolve: `gatsby-plugin-mdx`,
       options: {

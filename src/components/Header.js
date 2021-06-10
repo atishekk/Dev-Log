@@ -34,16 +34,29 @@ text-decoration: none;
 transition: 0.6s;
 box-shadow: 0px 0px 10px ${Theme.nord3};
 :hover {
-background-color: ${Theme.nord6};
+box-shadow: 0px 0px 20px ${Theme.nord7};
+background-color: ${Theme.nord8};
 color: ${Theme.nord1};
 }
+  @media (max-width: 400px) {
+    margin: 3px;
+    padding: 6px;
+  }
 `
 const Title = styled.h1`
   margin: 0px 0px 0px 10px;
+  padding: 5px 15px 15px 15px;
+  border-radius: 20px;
+  background-color: ${Theme.nord1};
   color: ${Theme.nord6};
   transition: 0.6s;
   :hover{
-  color: ${Theme.nord11};
+  box-shadow: 0px 0px 20px ${Theme.nord6};
+  background-color: ${Theme.nord4};
+  color: ${Theme.nord1};
+  }
+  @media (max-width: 400px) {
+    font-size: 1.5rem;
   }
 `
 
@@ -54,7 +67,7 @@ export default function Header({_sitetitle}) {
         <Title>{`${_sitetitle}(  )`}</Title>
       </Link>
       <Options>
-        <Button to="/about">About</Button>
+        <Button to="/about">About Me</Button>
         <Button to="/tags">Categories</Button>
       </Options>
     </Container>

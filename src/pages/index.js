@@ -3,15 +3,31 @@ import React from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import Post from "../components//Post";
-
+import SEO from 'react-seo-component';
+import {useSiteMetadata} from '../hooks/useSiteMetadata';
 
 const IndexWrapper = styled.main``;
 
 
-
 export default function Index({ data }){
+
+  const {
+    title,
+    description,
+    siteUrl,
+    siteLanguage,
+    siteLocale,
+  } = useSiteMetadata();
+
   return (
     <Layout>
+      <SEO
+        title={title}
+        description={description}
+        pathname={siteUrl}
+        siteLanguage={siteLanguage}
+        siteLocale={siteLocale}
+      />
       <IndexWrapper>
         {data.allMdx.nodes.map(
           ({ id, excerpt, frontmatter, fields }) => (
@@ -38,7 +54,7 @@ export const pageQuery = graphql`
         cover {
           publicURL
           childImageSharp {
-            fluid(traceSVG: {color: "#639"}, maxWidth: 2000){
+            fluid(traceSVG: {color: "#d8dee9"}, maxWidth: 2000){
               ...GatsbyImageSharpFluid_tracedSVG
             }
           }
