@@ -5,7 +5,7 @@ import {Github} from "@styled-icons/boxicons-logos";
 import {GitRepository} from "@styled-icons/remix-line";
 
 const FooterContainer = styled.div`
-  padding:10px 10px 10px 5px;
+  padding:10px 10px 10px 20px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -14,6 +14,7 @@ const FooterContainer = styled.div`
 const Content = styled.a`
   text-decoration: none;
   margin-right: 20px;
+  padding: 10px;
   color: ${Theme.nord6};
   transition: 0.6s;
   :hover {

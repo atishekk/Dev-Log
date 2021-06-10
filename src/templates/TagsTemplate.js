@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link, graphql } from 'gatsby';
-
 import Layout from '../components/Layout';
 import Theme from "../theme/Theme";
 import styled from 'styled-components';
 import Post from "../components/Post";
+import SEO from 'react-seo-component';
+import {useSiteMetadata} from '../hooks/useSiteMetadata';
 
 export const query = graphql`
   query($tag: String) {
@@ -25,11 +26,9 @@ export const query = graphql`
             cover {
               publicURL
               childImageSharp {
-                fluid(traceSVG: {color: "#639"}, maxWidth: 2000){
-                  ...GatsbyImageSharpFluid_tracedSVG
-                }
+                gatsbyImageData(layout: CONSTRAINED, placeholder: BLURRED)
               }
-            }
+            }           
           }
           fields {
             slug
@@ -41,11 +40,17 @@ export const query = graphql`
 `;
 const Container = styled.div`
 padding: 5px;
-`
+`;
 
 const NavLinks = styled(Link)`
 text-decoration: none;
 color: ${Theme.nord11};
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `
 
 const TagPosts = ({ pageContext, data }) => {
@@ -55,17 +60,25 @@ const TagPosts = ({ pageContext, data }) => {
     totalCount === 1 ? '' : 's'
   } tagged with "${tag}"`;
 
+  const metadata = useSiteMetadata();
+
   return (
     <Layout>
+      <SEO
+        title={tag}
+        titleTemplate={metadata.title}
+        description={`Blog posts marked with tag ${tag}`}
+        pathname={`${metadata.siteUrl}/tags/${tag.toLowerCase()}`}
+      />
       <Container>
         <h2>{tagHeader}</h2>
 
-        <div>
-          <NavLinks to="/tags">View all tags</NavLinks>
+        <NavLinks to="/tags">View all tags</NavLinks>
+        <Wrapper>
           {edges.map(({node: post}) => (
-            <Post id={post.id} excerpt={post.excerpt} frontmatter={post.frontmatter} fields={post.fields} />
+            <Post id={post.id} excerpt={post.excerpt} frontmatter={post.frontmatter} fields={post.fields} key={post.id}/>
           ))}
-        </div>
+        </Wrapper>
       </Container>
     </Layout>
   );

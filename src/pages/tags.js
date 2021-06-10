@@ -5,6 +5,8 @@ import styled from 'styled-components';
 
 import Layout from '../components/Layout';
 import Theme from '../theme/Theme';
+import SEO from 'react-seo-component';
+import {useSiteMetadata} from "../hooks/useSiteMetadata"
 
 export const query = graphql`
   query {
@@ -48,8 +50,17 @@ const TagsPage = ({
   data: {
     allMdx: { group, totalCount },
   },
-}) => (
-  <Layout>
+}) => {
+  const metadata = useSiteMetadata();
+ return (<Layout>
+    <SEO
+      title={"Categories"}
+      titleTemplate={metadata.title}
+      description={metadata.description}
+      pathname= {`${metadata.siteUrl}/tags`}
+      siteLanguage={metadata.siteLanguage}
+      siteLocale={metadata.siteLocale}
+    />
     <Container>
       <h2>Categories</h2>
       <p>
@@ -66,6 +77,6 @@ const TagsPage = ({
       </Categories>
     </Container>
   </Layout>
-);
+)};
 
 export default TagsPage;

@@ -2,7 +2,6 @@ import React from 'react';
 import { graphql, Link } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 import Layout from '../components/Layout';
-import Img from 'gatsby-image';
 import TableOfContents from "../components/TableOfContents"
 import Theme from '../theme/Theme'
 import styled from 'styled-components';
@@ -10,9 +9,10 @@ import Tags from "../components/Tags";
 import {LeftArrow, RightArrow} from '@styled-icons/boxicons-regular'
 import {useSiteMetadata} from "../hooks/useSiteMetadata";
 import SEO from 'react-seo-component';
+import {GatsbyImage, getImage} from 'gatsby-plugin-image';
 
 const Container = styled.div`
-padding: 2px;
+padding: 5px;
 `
 
 const ContentTable = styled.div`
@@ -77,16 +77,19 @@ export default function BlogPostTemplate({data, pageContext}) {
   const {frontmatter, body, tableOfContents, excerpt, fields} = data.mdx;
   const {previous, next} = pageContext;
   const {
+    title,
     siteUrl,
     siteLanguage,
     siteLocale,
     authorName
   } = useSiteMetadata();
 
+  const image = getImage(frontmatter.cover);
   return (
     <Layout>
       <SEO
         title={frontmatter.title}
+        titleTemplate={title}
         description={excerpt}
         pathname={`${siteUrl}${fields.slug}`}
         siteLanguage={siteLanguage}
@@ -98,10 +101,10 @@ export default function BlogPostTemplate({data, pageContext}) {
       />
       <Container>
         <TitleSection>
-        <h1>{frontmatter.title}</h1>
-        <i>{frontmatter.date}</i>
-        {!!frontmatter.tags ? <Tags tags = {frontmatter.tags} />: null}
-          </TitleSection>
+          <h1>{frontmatter.title}</h1>
+          <i>{frontmatter.date}</i>
+          {!!frontmatter.tags ? <Tags tags = {frontmatter.tags} />: null}
+        </TitleSection>
         {
           tableOfContents.items ? (
             <ContentTable>
@@ -111,9 +114,7 @@ export default function BlogPostTemplate({data, pageContext}) {
         }
         <Contents>
           {!!frontmatter.cover ? (
-            <Img
-              fluid={frontmatter.cover.childImageSharp.fluid}
-            />
+            <GatsbyImage image={image} />
           ) : null}
 
           <MDXRenderer>{body}</MDXRenderer>
@@ -158,9 +159,7 @@ query POST_SLUG($slug: String!) {
       cover {
         publicURL
         childImageSharp {
-          fluid(traceSVG: {color: "#d8dee9"}, maxWidth: 2000) {
-          ...GatsbyImageSharpFluid_tracedSVG
-          }
+          gatsbyImageData(width: 2000, placeholder: BLURRED)
         }
       }
     }

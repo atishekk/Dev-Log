@@ -6,17 +6,6 @@ import Fade from "./Fade";
 import Footer from "./Footer";
 import Theme from '../theme/Theme';
 
-const Container = styled.div`
-position: fixed;
-overflow: scroll;
-  height: 100vh;
-  width:100%;
-  background-color: ${Theme.nord1};
-  scrollbar-width: none;
-  ::-webkit-scrollbar {
-  display: none;
-  }
-`
 
 const AppStyles = styled.div`
   @media (max-width: 1000px) {
@@ -28,7 +17,7 @@ const AppStyles = styled.div`
   color: ${Theme.nord6};
   padding: 5px;
 `
-const Main = styled.main`
+const Main = styled.div`
   margin-top: 80px;
 `
 
@@ -36,16 +25,14 @@ export default function Layout({children, _title}) {
   const {title} = useSiteMetadata();
 
   return (
-    <Container>
-      <Fade>
-        <AppStyles>
-          <Header _sitetitle={title} _title={_title} />
-          <Main>
+    <Fade>
+      <AppStyles>
+        <Header _sitetitle={title} _title={_title} />
+        <Main>
           {children}
-            </Main>
-          <Footer />
-        </AppStyles>
-      </Fade>
-      </Container>
+        </Main>
+        <Footer />
+      </AppStyles>
+    </Fade>
   )
 }

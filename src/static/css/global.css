@@ -1,10 +1,10 @@
+html {
+}
+
 body {
   box-sizing: border-box;
-  ::-webkit-scrollbar{
-    display: none;
-  }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  height: 100%;
+  background-color: #3b4252;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -14,4 +14,8 @@ h1, h2, h3, h4, h5, h6 {
 
 blockquote {
   color: #eceff4;
+}
+
+.aboutImage {
+  box-shadow: 10px 10px #4c566a;
 }

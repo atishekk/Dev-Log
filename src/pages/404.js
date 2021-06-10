@@ -3,6 +3,8 @@ import {Link} from 'gatsby';
 import styled from 'styled-components';
 import Theme from '../theme/Theme'
 import Fade from '../components/Fade'
+import SEO from 'react-seo-component';
+import {useSiteMetadata} from "../hooks/useSiteMetadata"
 
 const Center = styled.div`
  position: fixed;
@@ -27,8 +29,16 @@ const Back = styled(Link)`
 `;
 
 export default function Lost() {
+
+  const metadata = useSiteMetadata();
+
   return(
     <Fade>
+      <SEO
+        title={"Page Not Found"}
+        titleTemplate={metadata.title}
+        description={"Page not found"}
+      />
       <Center>
         <Text> You are Lost !!! </Text>
         <Back to = "/"> Go Back </Back>

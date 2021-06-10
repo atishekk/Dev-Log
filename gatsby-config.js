@@ -11,6 +11,7 @@ module.exports = {
   },
   plugins: [
     `gatsby-plugin-styled-components`,
+    `gatsby-plugin-image`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     `gatsby-plugin-react-helmet`,
@@ -54,6 +55,10 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: { path: `${__dirname}/posts`, name: `posts` },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: { path: `${__dirname}/src/static/images`, name: `images` },
     },
   ],
 };
