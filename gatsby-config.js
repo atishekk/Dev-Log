@@ -1,4 +1,3 @@
-const remarkSlug = require(`remark-slug`);
 
 module.exports = {
   siteMetadata: {
@@ -18,7 +17,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        icon: `src/static/images/favicon.png`,
+        icon: `./static/images/favicon.png`,
         }
     },
     {
@@ -27,6 +26,10 @@ module.exports = {
         extensions: [`.mdx`, `.md`],
         remarkPlugins: [
             require('remark-slug'),
+            require('remark-math')
+        ],
+        rehypePlugins: [
+          require('rehype-katex'),
         ],
         gatsbyRemarkPlugins: [
           {
@@ -55,10 +58,6 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: { path: `${__dirname}/posts`, name: `posts` },
-    },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: { path: `${__dirname}/src/static/images`, name: `images` },
     },
   ],
 };

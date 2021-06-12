@@ -80,8 +80,9 @@ export default function About() {
           <i> Computer Science and Artificial Intelligence. </i>  
         </p>
         <p>
-          I'm passionate about technology and I love solving problems. This blog is my effort to express my passion, learn
-          new things and hopefully meet new people.
+          I'm passionate about technology and I love solving problems. 
+          This blog is my effort to explore and learn new things and hopefully meet new people.
+
         </p>
         <p>
           Some of my interests include: 

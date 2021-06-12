@@ -18,6 +18,11 @@ export const Pre = styled.pre`
   }
   font-family: 'Courier New', Courier, monospace;
   position: relative;
+  ::-webkit-scrollbar {
+  display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 export const LineNo = styled.span`
@@ -52,6 +57,7 @@ const Code = ({ codeString, language }) => {
   return (
     <>
       <Highlight
+        className={"rmScroll"}
         {...defaultProps}
         code={codeString}
         language={language}

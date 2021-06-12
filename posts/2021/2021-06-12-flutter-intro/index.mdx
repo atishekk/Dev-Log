@@ -1,0 +1,254 @@
+---
+title: Flutter - Intro to Declarative UI
+date: 2021-06-12
+published: true
+tags: ["flutter", "declarative-ui", "android"]
+cover: cover.jpg
+---
+
+import LinkExternal from '../../../src/components/LinkExternal.js'
+import Gif from "../../../src/components/Gif.js"
+import "katex/dist/katex.min.css"
+
+This article is an Introduction to **Declarative** style of UI design using **<LinkExternal _href="https://www.flutter.dev">Flutter</LinkExternal>** which is now being used by many companies
+to create cross platform applications with near native performance using just a single code base.
+
+**<LinkExternal _href="https://www.flutter.dev">Flutter</LinkExternal>** is a *Open-Source* & *Multiplatform* 
+UI tookit introduced by Google in 2017. Flutter uses **<LinkExternal _href="https://www.dart.dev">Dart</LinkExternal>** which is a scrpting
+language optimised for UI development and null safety. 
+
+
+# Imperative Model
+
+This has been the norm for developing UI applications for a while now. Frameworks like Android and iOS use the imperative model for UI programming.
+
+> In the imperative model UI is created using manually constructed UI entities like an `Activity` or `Fragment` in Android or a `UIView` in iOS that can later be mutated using methods and setters when the UI changes.
+
+Hence to change a UI element a reference to it must be stored or retreived from the View's parent and any changes shall be done by calling appropirate methods on that object. Pretty straightforward, right ? 
+
+**Naah, not really**. The main issue with this paradigm is that you need to store a reference to
+each and every element that the user interacts with or that the element will change in the future when the application state changes. 
+And not only that the developer has handle each and every possible application state and all the elements 
+need to be updated in the right order.
+
+# Declarative Model
+
+The problem with the imperative model leads us to the declarative model. 
+
+> In the declarative model the developer has to declare the current application UI state and the framework handles the operations to transition to the new state.
+
+This abstraction of the underlying mechanism can be leveraged to effectively create cross-platform applications.
+
+**<LinkExternal _href="https://reactnative.dev/">React Native</LinkExternal>** and 
+**<LinkExternal _href="https://www.flutter.dev">Flutter</LinkExternal>** are two prime examples.
+
+**Consider that you have to repair your car :**
+
+- The Declarative model is analogous to calling your friend ( *framework* ) to fix up your car.
+
+- The Imperative model is like calling up your dad and he gives your *step by step instructions* to fix your car.
+
+Done with the intro let's look at some code.
+
+# An Investigation
+
+For comparison we'll build a simple Android app with a button that changes colour when clicked.
+
+Android uses the the imperative model for porgramming its applications. View layouts are defined in XML files that is inflated into 
+view using Kotlin / Java code and later can be manipulated by referencing their object using Ids and calling appropriate methods
+on it.
+
+## Using Android SDK
+
+First we define the layout for the app. 
+
+```xml
+<!-- activity_main.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:id="@+id/Example_Button"
+        android:text="Click me!!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+The above code defines the button with `id = Example_Button` placed at the center of the screen. Now we need to inflate this layout
+into view in the `MainActivity` class and get the Button object using the id.
+
+```kotlin
+// MainActivity.kt
+
+package com.example.examplebutton
+
+import android.annotation.SuppressLint
+import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Button
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var exampleButton: Button  // 1
+    private var toggleColor = false             // 2
+    @SuppressLint("ResourceType")
+    override fun onCreate(savedInstanceState: Bundle?) {  // 3
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)              // 4 
+        exampleButton = findViewById(R.id.Example_Button)   // 5
+
+        exampleButton.setOnClickListener {                  // 6
+            toggleColor = when (toggleColor) {
+                true -> {
+                    it.setBackgroundColor(Color.parseColor(resources.getString(R.color.nord)))
+                    false
+                }
+                else -> {
+                    it.setBackgroundColor(Color.parseColor(resources.getString(R.color.red)))
+                    true
+                }
+            }
+        }
+    }
+}
+```
+
+You don't really need to understand the code completely but there are some key point:
+1. Private variable `exampleButton` will hold the reference to the button and can initialised once the *View* is created.
+
+2. Will store the state of the button, there are better ways to do this using <LinkExternal _href="https://developer.android.com/topic/libraries/architecture/viewmodel"> View Models </LinkExternal> but this will do for now.
+
+3. `onCreate(Bundle?)` is called when the *View* object is created.
+4. Now you inflate the previously defined layout into view.
+5. Once the layout is inflated into view the reference to the button can be found and stored.
+6. Set a listener on the button that is called when the button is clicked by the user.
+
+**NOTE :**
+
+The above implementation has a **subtle bug** and it is related to the way we are storing the application state( *See point 2* ). If are running the code
+on your machine just toggle the button color and rotate your device.
+
+### Result
+
+<Gif _src="../../images/2021-06-12-flutter-intro/result_android.gif" _alt="result for android sdk" _height={400}> Resulting application using the Android SDK </Gif>
+
+
+## Using Flutter SDK
+
+Now, let's see how Flutter will handle this.
+
+```dart
+// main.dart
+
+import 'package:flutter/material.dart';
+
+void main() async {                                     // 1
+  runApp(                                               // 2
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+          appBar: AppBar(
+              title: Text("ExampleButtonFlutter"),
+              backgroundColor: Color(0xFF2E3440)
+          ),
+        body: ExampleButton(),                          // 3
+      ),
+    ),
+  );
+}
+
+class ExampleButton extends StatefulWidget {                    // 4
+  @override
+  _ExampleButtonState createState() => _ExampleButtonState();
+}
+
+class _ExampleButtonState extends State<ExampleButton> {        // 5
+  var toggled = false;
+  final nordColor = const Color(0xFF2E3440);
+  final red = const Color(0xFFBF616A);
+
+  void _handleColorChange() {                                   // 6
+    setState(() {
+        toggled = !toggled;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {                          // 7
+    return Center(
+      child: TextButton (
+          style: TextButton.styleFrom(
+              primary: Colors.white,
+              backgroundColor: toggled ? red : nordColor,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              ),
+          onPressed: _handleColorChange,
+          child: Text("Click Me")
+      )
+    );
+  }
+}
+```
+Again you don't need to understand the code completely, some key points:
+
+1. `main()` is the starting point for our application and similar to main() functions in other programming
+languages like *C++*.
+
+2. `runApp()` is function that will run our Flutter application. Here it is called with a `MaterialApp()` object for creating an application using *Google's Material Design*.
+
+3. In the `body` atttibute we are passing the `ExampleButton` component or as Flutter calls it a `Widget`.
+
+4. Now we define `ExampleButton` widget and it extends the `StatefulWidget` *ie* the widget keeps track of it state and will be updated when its state changes. The class creates a `_ExampleButtonState` state object that would keep track of the widget's state.
+
+5. `_ExampleButtonState` class extends the `State` class and changes to class's object would trigger redrawing
+of the `ExampleButton` widget.
+
+6. `_handleColorChange()` is the private callback function that is called when the button is pressed. `setState()` is used to update the state and invalidate the widget which in turn triggers the redrawing.
+
+7. The `build` functions is necessary for every widget. It returns a Widget object defining how the component
+is to be shown. The background colour for the button is updated based on the current state.
+
+**NOTE :**
+
+- *Flutter* treats everything as a `Widget` even margin and padding. A widget may be `StatefulWidget` *ie*
+the widget maintains an internal state and can be updated or a `StatelessWidget` *ie* an immutable widget
+(all variable in the object need to be final).
+
+- Any changes to a state must be notified to the framework (`setState`) and this leads to the rebuild or redrawing of the widget.
+
+### Result
+
+<Gif _src="../../images/2021-06-12-flutter-intro/result_flutter.gif" _alt="result for flutter sdk" _height={400}> Resulting application using the Flutter SDK </Gif>
+
+# Conclusion
+
+As the number of UI elements in the application grows `MainActivity` class or any UI class in the *Android SDK's Imperative Model* will become more complex as 
+you'd need to handle every UI element each with it own activity listeners and with every interaction the UI would have to be 
+updated in the right order.
+
+Whereas in the *Flutter SDK* all we had to do was maintain the `toggled` state of the button and any changes to that state would lead 
+to the rebuilding of the widget. Another advantage of the *Flutter* application is that it can be built for the Web, Android, iOS, Windows,
+macOS and even Linux. 
+
+This abstraction provided by the framework can enable you to build, test and deliver applications and new features faster. This also ensures a uniform experience for all users irrespective of their platform of choice.
+
+The simplicity of the declarative model has been a major shift in how applications are created today. Frameworks like  Microsoft's<LinkExternal _href="https://dotnet.microsoft.com/">  .NET </LinkExternal> 
+and <LinkExternal _href="https://www.qt.io/">Qt</LinkExternal> have introduced features to support a declarative paradigm.
+
+The control provided by the Imperative model may be necessary in case you want something really specific like an intricate animation or a low level platform specific API. 
+Both **<LinkExternal _href="https://www.flutter.dev">Flutter</LinkExternal>** and **<LinkExternal _href="https://reactnative.dev/">React Native</LinkExternal>** have support for calling platform-specific code making a major part of your application code **reuseable**.
+
+
+

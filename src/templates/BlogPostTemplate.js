@@ -37,7 +37,10 @@ const ContentTable = styled.div`
 const Navigation = styled.div`
   display:flex;
   justify-content: space-between;
-  margin-top: 30px;
+  align-items: center;
+  background-color: ${Theme.nord0};
+  margin-top: 50px;
+  height: 100px;
 `
 
 const Contents = styled.div`
@@ -47,12 +50,19 @@ const Contents = styled.div`
   }
 `
 const NavLinks = styled(Link)`
+display:block;
 text-decoration: none;
 color: ${Theme.nord11};
 transition: 0.6s;
 :hover {
 color: ${Theme.nord14};
 }
+  font-size: 0.9rem;
+`;
+
+const Nav = styled.div`
+  padding: 10px;
+  font-size: 1.2rem;
 `;
 
 const TitleSection = styled.div`
@@ -123,23 +133,25 @@ export default function BlogPostTemplate({data, pageContext}) {
           {previous === false ? null : (
             <>
               {previous && (
-                <b>
+                <Nav>
+                  Older Post
                   <NavLinks to={previous.fields.slug}>
                     <OldPost />
                     <span>{previous.frontmatter.title}</span>
                   </NavLinks>
-                </b>
+                </Nav>
               )}
             </>
           )}
           {next === false ? null : (
             <>
               {next && (
-                <b>
+                <Nav style={{textAlign: 'right'}}>
+                  Newer Post
                   <NavLinks to={next.fields.slug}>
                     <span>{next.frontmatter.title}</span><NewPost />
                   </NavLinks>
-                </b>
+                </Nav>
               )}
             </>
           )}

@@ -16,7 +16,7 @@ const Container = styled.header`
   }
   margin-left: -10px;
   background-color: ${Theme.nord1};
-  z-index:2;
+  z-index:10;
   top: 0px;
 `
 const Options = styled.div`

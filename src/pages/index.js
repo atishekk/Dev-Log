@@ -27,6 +27,7 @@ export default function Index({ data }){
         siteLanguage={metadata.siteLanguage}
         siteLocale={metadata.siteLocale}
         author={metadata.authorName}
+        image={"../../posts/images/about.jpg"}
       />
       <IndexWrapper>
         {data.allMdx.nodes.map(
