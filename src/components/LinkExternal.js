@@ -6,9 +6,9 @@ const Link = styled.a`
   text-decoration: none;
   color: ${Theme.nord7};
   transition: 0.6s;
-  padding: 2px 5px 5px 5px;
   border-radius: 5px;
   :hover {
+    padding: 2px 5px 5px 5px;
     background-color: ${Theme.nord0};
     color: ${Theme.nord10};
     box-shadow: -4px -4px ${Theme.nord3};

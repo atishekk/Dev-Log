@@ -1,0 +1,284 @@
+---
+title: What a Neural Network sees? Class Activation Map
+date: 2021-06-14
+published: true
+tags: ["Tensorflow", "Keras", "Neural-Nets", "Heatmap"]
+cover: cover.jpg
+otherImages: 
+  - "cat.jpg"
+  - "cat_plt.png"
+  - "cat_heatmap.png"
+  - "cat_gradcam.png"
+---
+
+import LinkExternal from "../../../src/components/LinkExternal.js"
+import Image from "../../../src/components/Image.js"
+
+Neural Netwrks are *black-boxes* and are really cryptic about the features they use to classify the input. **Class Activation Maps** or more commonly known as **Heatmaps** can help us understand what the network pay attention to when classifying an image.
+
+# Class Activation Maps
+
+Heatmaps are commonly used in UX research to create designs that maximise user attention and interaction. We'll be doing something 
+similar, we'll overlay a class activation map on the original input to see the areas responsible for the output generated.
+
+The pixels responsible for the prediction of a class by the neural-net will be represented with warmer colors and the ones that the
+ignored by the network will have more cooler colours.
+
+# The Model
+
+I'm a simple and I like easy work so we'll be using  <LinkExternal _href="https://keras.io/api/applications/resnet/#resnet50-function">ResNet-50 </LinkExternal> with  <LinkExternal _href="https://keras.io/" >Keras</LinkExternal>.
+<LinkExternal _href="https://keras.io/api/applications/resnet/#resnet50-function">ResNet-50 </LinkExternal> 
+is a Convolutional Neural Network (CNN) that is trained on the
+<LinkExternal _href="https://www.image-net.org/index.php">ImageNet</LinkExternal> dateset. 
+
+The network is *50 layers deep* with over *25 million* parameters. 
+Keras provides us with the model in its API and can be used using `tensorflow.keras.applications.resnet50.ResNet50()`.
+
+## Making Inferences
+
+Following along on your machine requires installation of a few packages,I recommend you to install all the required packages in a python virtual environment. **Don't pollute your global python installation**, I've been there and it ain't pretty.
+
+We'll be needing *Numpy* (`pip install numpy`), *Tensorflow* (`pip install tensorflow`) (*Keras* is packaged with Tensorflow) and *Matplotlib* (`pip install matplotlib`).
+
+You can find all the code used here:  <LinkExternal _href="https://gist.github.com/atishekk/f93b616fd453502da41a2adb1cc9187d">Github Gist</LinkExternal>. To follow along just open the code in <LinkExternal _href="https://colab.research.google.com">Google Colaboratory</LinkExternal> using the option provided at the top
+
+### Loading Images
+
+With that done you'll need an image (or images). I'll be using :
+
+<Image _image={props.localImages[0]} _alt="cat.jpg" _width={"400px"}>cat.jpg</Image>
+
+I'll be using the Keras `image()` function load in the image and later convert it into an array.
+
+Now finally let's look at some code:
+
+```python
+# getting the packages
+import tensorflow as tf
+from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
+from tensorflow.keras.preprocessing import image
+import numpy as np
+import matplotlib.pyplot as plt
+
+# loading in the image
+IMAGE = "./cat.jpg"  # replace with your image path
+
+# ResNet50 wants the image dimension as (244 x 244) pixels
+img = image.load_img(IMAGE, target_size=(224, 224))
+
+plt.imshow(img)
+plt.show()
+```
+And if everything is fine you should see the resized image
+
+<Image _image={props.localImages[1]} _alt="resized cat.png" _width={"400px"}>resized cat.png</Image>
+
+### Preprocessing & Inference
+
+With the image loaded let's get the inference running.
+
+But before that we need do a little more work. The model requires a batch of images or more simply an
+array of images hence, we need to make our input data dimensionally correct
+
+At the moment our is a 3-D array with dimensions $224 * 224 *3$ ($(244 * 244)$ is the pixels and $3$ being the RGB channels). 
+For a batch of images the dimensions would be $size \: of \: the \: batch * 224 * 224 * 3$. To do so we use the Numpy function `expand_dims()`
+
+```python
+img_array = image.img_to_array(img)
+img_batch = np.expand_dims(img_array, axis=0)
+```
+
+Now that our data is dimensionally correct we can move to normalising our pixel values. `preprocess_input()` will do the necesarry work for us.
+
+With that done we can get the model and run an inference.
+
+```python
+# ...
+#normalise the input image batch
+img_normalised = preprocess_input(img_batch)
+
+# get the model
+model = tf.keras.applications.resnet50.ResNet50()
+
+#running an inference
+prediction = model.predict(img_normalised)
+print(decode_predictions(prediction, top=5)[0])
+```
+The prediction produced is as follows:
+
+``` text
+[
+  ('n02123045', 'tabby', 0.5697842), 
+  ('n02124075', 'Egyptian_cat', 0.29003567), 
+  ('n02123159', 'tiger_cat', 0.11475985), 
+  ('n02127052', 'lynx', 0.016232058), 
+  ('n03443371', 'goblet', 0.0012818157)
+]
+
+```
+
+The ImageNet Dataset on which ResNet50 was trained is very granular and hence doesn't contain the more general class *'cat'*. I can 
+confirm that the cat is indeed a tabby cat.
+
+With just 20 lines of code we created a functional image classifier, pretty neat !!
+The inference code can be consolidated in to function as follows:
+
+```python
+
+def classify(IMAGE_PATH):
+  img = image.load_img(IMAGE_PATH, target_size=(224, 224))
+  model = tf.keras.applications.resnet50.ResNet50()
+  img_array = image.img_to_array(img)
+  img_batch = np.expand_dims(img_array, axis=0)
+  img_preprocessed = preprocess_input(img_batch)
+  prediction = model.predict(img_preprocessed)
+  print(decode_predictions(prediction, top=5)[0])
+
+```
+
+# Creating the Class Activation Map
+
+In this section we'll be creating a heatmap for the last convolutional layer of the ResNet50 model and overlay it on the input image.
+
+## Creating the Heatmap
+
+So first of all we'll need a model that maps from the input layer *ie* our image to the activations of the last convolutional layer(as we'll need access to the output values) and the output layer of the model.
+The names for the layers can be found using `model.summary()`
+
+```python
+last_conv_layer_name = "conv5_block3_out"
+classifier_layer_names = [ "avg_pool", "predictions"]
+
+# getting the layer
+last_conv_layer = model.get_layer(last_conv_layer_name)
+# creating the model mapping from inputs to the last convolutional layer's activations
+last_conv_model = tf.keras.Model(model.inputs, last_conv_layer.output)
+
+# Now we would create mapping from the last convolutional layer 
+# (or the classfier's input) to output classes
+classifier_input = tf.keras.Input(shape=last_conv_layer.output.shape[1:])
+x = classifier_input
+
+for layer_name in classifier_layer_names:
+  x = model.get_layer(layer_name)(x)
+
+classifier_model = tf.keras.Model(classifier_input, x)
+```
+
+Now that we have have the necesarry model mapping it's time to calculate the gradient values of the top predicted class with respect to
+the activations of the last convolutional layer. The gradient values are an accurate depiction of the important features that classifier uses to classify the image.
+
+I'll be using `GradientTape()` API for automatic differentiation.
+
+```python
+with tf.GradientTape() as tape:
+  # pass in the normalised image
+  last_conv_layer_output = last_conv_model(img_normalised)
+  tape.watch(last_conv_layer_output)
+
+  # predict the class based on the convolution output
+  preds = classifier_model(last_conv_layer_output)
+  # get the index and class for the top prediction
+  top_pred_index = tf.argmax(preds[0])
+  top_class_channel = preds[:, top_pred_index]
+
+# Computing the gradient values top predicted class with respect to the last convolutional layer's feature map / activations
+grads = tape.gradient(top_class_channel, last_conv_layer_output)
+# Now we average out the gradient values over a specific feature map channel
+pooled_grads = tensorflow.reduce_mean(grads, axis=(0, 1, 2))
+```
+
+With the gradient values we are ready to calculate the the heatmap. To do so we multiply each channel of the feature map / activations
+by how important that channel is for the class that is predicted for the image. Then the channel-wise mean of the resulting feature-map would be our final class activation map.
+
+```python
+# get the activation of the last convolutional layer
+last_conv_layer_output = last_conv_layer_output.numpy()[0]
+pooled_grads = pooled_grads.numpy()
+
+# multiplying channels with their gradient values
+for i in range(pooled_grads.shape[-1]):
+  last_conv_layer_output[:, :, i] *= pooled_grads[i]
+
+# channel-wise mean to obtaint the heatmap
+heatmap = np.mean(last_conv_layer_output, axis=-1)
+
+```
+
+## Creating the Output Image
+
+Now that we have the `heatmap` we can move on to overlaying it on our original image. We need to make a colour map from the heatmap values.
+I'll be using the *jet* colour map from matplotlib.
+
+```python
+import matplotlib.cm as cm
+
+# normalise the heatmap values to the range [0,1]
+heatmap = np.maximum(heatmap, 0) / np.max(heatmap)
+
+jet = cm.get_cmap("jet")
+# Scale the values of the heatmap
+heatmap = np.uint8(255 * heatmap)
+
+# Get the color heatmap
+jet_colours = jet(np.arange(256))[:, :3]
+colour_heatmap = jet_colours[heatmap]
+```
+
+Now that we have the colour heatmap we can get the input image, superimpose the colour heatmap and save the image
+
+```python
+# getting the orginal image
+img2 = tf.keras.preprocessing.image.load_img(IMAGE)
+img2 = tf.keras.preprocessing.image.img_to_array(img2)
+
+# resizing the heatmap to fit the image 
+colour_heatmap = image.array_to_img(colour_heatmap)
+colour_heatmap = colour_heatmap.resize((img2.shape[1], img2.shape[0]))
+colour_heatmap = image.img_to_array(colour_heatmap)
+
+#superimposing the colour heatmap
+superimposed_img = colour_heatmap * 0.4 + img2
+superimposed_img = image.array_to_img(superimposed_img)
+
+OUTPUT = "cat_heatmap.jpg"
+superimposed_img.save(OUTPUT)
+```
+
+Now to view the final image:
+```python
+import matplotlib.image as mpimg
+
+grad_img = mpimg.imread(OUTPUT)
+plt.imshow(grad_img)
+plt.show()
+```
+And voila!!
+
+<Image _image={props.localImages[2]} _alt="cat heatmap.png" _width={"400px"}>cat_heatmap.png</Image>
+
+Try changing the values of `last_conv_layer_name` and `classifier_layer_names` and see how the features change through the different convolution layers.
+
+## The Easier Way
+
+The above implementation can be a little overwhelming, but it is quite straightforward once you get the hang of it. But there is a simpler
+way to do this with the help of *tf_explain* (`pip install tf_explain`) and `GradCAM()`. But the results were ok at best and the documentation is not that great.
+
+```python
+from tf_explain.core.grad_cam import GradCAM
+
+data = (img_batch, None)
+explainer = GradCAM()
+# here 281 is the class index of tabby cat
+grid = explainer.explain(data, model, 281)
+explainer.save(grid, ".", "output_gradCAM.png")
+
+gradCAM_img = mpimg.imread("output_gradCAM.png")
+plt.imshow(gradCAM_img)
+plt.show()
+```
+The output produced is fine and can be helpful for prototyping. 
+
+<Image _image={props.localImages[3]} _alt="cat gradCAM.png" _width={"400px"}>cat_gradCAM.png</Image>
+
+**You can get the complete code here :  <LinkExternal _href="https://gist.github.com/atishekk/f93b616fd453502da41a2adb1cc9187d">atishekk/resNet50-class-activation-map.ipynb</LinkExternal>**

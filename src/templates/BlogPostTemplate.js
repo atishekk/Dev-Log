@@ -57,7 +57,10 @@ transition: 0.6s;
 :hover {
 color: ${Theme.nord14};
 }
-  font-size: 0.9rem;
+  font-size: 1rem;
+  @media(max-width: 400px) {
+  font-size: 0.75rem;
+  }
 `;
 
 const Nav = styled.div`
@@ -127,7 +130,7 @@ export default function BlogPostTemplate({data, pageContext}) {
             <GatsbyImage image={image} style={{marginBottom: '20px'}} alt="Cover image"/>
           ) : null}
 
-          <MDXRenderer>{body}</MDXRenderer>
+          <MDXRenderer localImages={frontmatter.otherImages}>{body}</MDXRenderer>
         </Contents>
         <Navigation>
           {previous === false ? null : (
@@ -170,6 +173,11 @@ query POST_SLUG($slug: String!) {
       date(formatString: "Do MMMM. YYYY")
       cover {
         publicURL
+        childImageSharp {
+          gatsbyImageData(width: 2000, placeholder: BLURRED)
+        }
+      }
+      otherImages {
         childImageSharp {
           gatsbyImageData(width: 2000, placeholder: BLURRED)
         }
