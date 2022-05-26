@@ -4,9 +4,9 @@ import Theme from '../theme/Theme';
 import Layout from '../components/Layout';
 import SEO from 'react-seo-component';
 import { useSiteMetadata } from '../hooks/useSiteMetadata';
-import {StaticImage} from 'gatsby-plugin-image';
-import {Linux, Cplusplus, C, Cmake, Kotlin, Flutter, Python, Tensorflow, Docker, Mongodb, Sqlite, Git, Latex, Markdown} from '@styled-icons/simple-icons';
-import {Node, ReactLogo, Android} from '@styled-icons/fa-brands'
+import { StaticImage } from 'gatsby-plugin-image';
+import { Linux, Cplusplus, Flutter, Python, Tensorflow, Docker, Mongodb, Sqlite, Go, Rust } from '@styled-icons/simple-icons';
+import { Node, Github } from '@styled-icons/fa-brands'
 import ReactTooltip from 'react-tooltip';
 
 const Title = styled.div`
@@ -55,7 +55,7 @@ const InterestsContainer = styled.div`
 
 export default function About() {
   const metadata = useSiteMetadata();
-  return(
+  return (
     <Layout>
       <SEO
         title={"About Me"}
@@ -66,50 +66,45 @@ export default function About() {
         siteLocale={metadata.siteLocale}
         author={metadata.authorName}
       />
-      <Title> 
+      <Title>
         <h1>
-          About Me!! 
+          About Me!!
         </h1>
       </Title>
       <Content>
         <Image>
-        <StaticImage src={"../../posts/images/about.jpg"} alt = "My Photo" placeholder="blurred" layout="constrained" className="aboutImage"/>
+          <StaticImage src={"../../posts/images/about.jpg"} alt="My Photo" placeholder="blurred" layout="constrained" className="aboutImage" />
         </Image>
         <p>
-          Hi, I'm Atishek. I'm 20 and currently pursuing my Bachelors in 
-          <i> Computer Science and Artificial Intelligence. </i>  
+          Hi, I'm Atishek. I'm 21 and currently pursuing my Bachelors in
+          <i> Computer Science and Artificial Intelligence. </i>
         </p>
         <p>
-          I'm passionate about technology and I love solving problems. 
+          I'm passionate about technology and I love solving problems.
           This blog is my effort to explore and learn new things and hopefully meet new people.
 
         </p>
         <p>
-          Some of my interests include: 
-          <InterestsContainer> 
-            <Linux style={{height: '40px'}} data-tip='Linux' data-event='mouseenter click'/>
-            <Cplusplus style={{height: '40px'}} data-tip='C++'data-event='mouseenter click'/>
-            <C style={{height: '40px'}} data-tip='C'data-event='mouseenter click'/>
-            <Git style={{height: '40px'}} data-tip='Git'data-event='mouseenter click'/>
-            <Python style={{height: '40px'}} data-tip='Python'data-event='mouseenter click'/>
-            <Tensorflow style={{height: '40px'}} data-tip='Tensorflow' data-event='mouseenter click'/>
-            <Kotlin style={{height: '40px'}} data-tip='Kotlin' data-event='mouseenter click'/>
-            <Android style={{height: '40px'}} data-tip='Android'data-event='mouseenter click'/>
-            <Flutter style={{height: '40px'}} data-tip='Flutter'data-event='mouseenter click'/>
-            <Docker style={{height: '40px'}} data-tip='Docker'data-event='mouseenter click'/>
-            <Cmake style={{height: '40px'}} data-tip='CMake'data-event='mouseenter click'/>
-            <Node style={{height: '40px'}} data-tip='Node.js'data-event='mouseenter click'/>
-            <ReactLogo style={{height: '40px'}} data-tip='React' data-event='mouseenter click'/>
-            <Sqlite style={{height: '40px'}} data-tip='SQL'data-event='mouseenter click'/>
-            <Mongodb style={{height: '40px'}} data-tip='MongoDB'data-event='mouseenter click'/>
-            <Markdown style={{height: '40px'}} data-tip='Markdown'data-event='mouseenter click'/>
-            <Latex style={{height: '40px'}} data-tip='Latex'data-event='mouseenter click'/>
+          Some of my interests include:
+          <InterestsContainer>
+            <Linux style={{ height: '40px' }} data-tip='Linux' data-event='mouseenter click' />
+            <Cplusplus style={{ height: '40px' }} data-tip='C++' data-event='mouseenter click' />
+            <Go style={{ height: '40px' }} data-tip='Go' data-event='mouseenter click' />
+            <Rust style={{ height: '40px' }} data-tip='Rust' data-event='mouseenter click' />
+            <Python style={{ height: '40px' }} data-tip='Python' data-event='mouseenter click' />
+            <Tensorflow style={{ height: '40px' }} data-tip='Tensorflow' data-event='mouseenter click' />
+            <Flutter style={{ height: '40px' }} data-tip='Flutter' data-event='mouseenter click' />
+            <Docker style={{ height: '40px' }} data-tip='Docker' data-event='mouseenter click' />
+            <Node style={{ height: '40px' }} data-tip='Node.js' data-event='mouseenter click' />
+            <Sqlite style={{ height: '40px' }} data-tip='SQL' data-event='mouseenter click' />
+            <Mongodb style={{ height: '40px' }} data-tip='MongoDB' data-event='mouseenter click' />
+            <Github style={{ height: '40px' }} data-tip='Git / GitHub' data-event='mouseenter click' />
           </InterestsContainer>
         </p>
         <p>
 
         </p>
-        <ReactTooltip className="toolTip" globalEventOff='click'/>
+        <ReactTooltip className="toolTip" globalEventOff='click' />
       </Content>
     </Layout>
   )
